@@ -1,0 +1,13 @@
+mode: "auto" # manual, auto
+data_type: "green"
+year: "2023"
+month: "2"
+n_back_month: 1
+local_base_path: "data/raw/"                        
+gcp_project_id: "your_gcp_project_id"
+gcs_bucket: "your_gcs-bucket"
+gcs_folder: "your_gcs_folder/"                     
+bq_dataset: "your_bq_dataset"
+bq_table: "your_bq_table"
+nyc_data_url: "https://d37ci6vzurychx.cloudfront.net/trip-data"  
+discord_webhook_url: "https://discord.com/api/webhooks/discord_webhook_url"

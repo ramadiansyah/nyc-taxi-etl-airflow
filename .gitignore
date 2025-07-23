@@ -28,7 +28,7 @@ gcs_keys.json
 secrets.yaml
 /config/*
 !/config/.gitkeep
-!/config/config.yaml
+!/config/config.yaml.example
 !/config/gcs_keys.json.example
 config.yaml
 config/*.yaml

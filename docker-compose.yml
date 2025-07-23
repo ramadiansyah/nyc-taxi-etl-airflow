@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  airflow-db:
+    image: postgres:13
+    container_name: airflow_postgres_2
+    environment:
+      POSTGRES_DB: ${AIRFLOW_POSTGRES_DB}
+      POSTGRES_USER: ${AIRFLOW_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${AIRFLOW_POSTGRES_PASSWORD} 
+    ports:
+      - "5433:5432"
+    volumes:
+      - airflow_pgdata_2:/var/lib/postgresql/data
+    networks:
+      - airflow_net
+
+  airflow:
+    image: apache/airflow:2.9.1-python3.10
+    container_name: airflow_2
+    depends_on:
+      - airflow-db
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${AIRFLOW_POSTGRES_USER}:${AIRFLOW_POSTGRES_PASSWORD}@airflow-db:5432/${AIRFLOW_POSTGRES_DB}
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS}
+      PYTHONPATH: /opt/airflow  
+    volumes:
+      - ./airflow_logs:/opt/airflow/logs
+      - ./config:/opt/airflow/config
+      - ./dags:/opt/airflow/dags
+      - ./operators:/opt/airflow/operators
+      - ./services:/opt/airflow/services
+      - ./utils:/opt/airflow/utils
+      - ./requirements.txt:/requirements.txt
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+        pip install --no-cache-dir -r /requirements.txt &&
+        airflow db upgrade &&
+        airflow scheduler & airflow webserver
+      "
+    networks:
+      - airflow_net
+
+networks:
+  airflow_net:
+
+volumes:
+  airflow_pgdata_2: {}
